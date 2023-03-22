@@ -11,6 +11,11 @@ use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\ProfileUpdateController;
+use App\Http\Controllers\Admin\RolesAndPermissionsController;
+use App\Http\Controllers\Auth\PostUpdateController;
+use App\Http\Controllers\Auth\PostCreateController;
+use App\Http\Controllers\Auth\PostViewController;
+use App\Http\Controllers\Auth\PostDeleteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -29,7 +34,9 @@ Route::post('login',[LoginController::class,'login']);
 Route::post('password/forgot-password',[ForgetPasswordController::class, 'forgetPassword']);
 Route::post('password/reset-password',[ResetPasswordController::class, 'passwordReset']);
 
-Route::middleware(['auth:sanctum'])->group(function() {
+
+//  Auth user
+Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('profile', function (Request $request) {
         return $request->user();
     });
@@ -38,4 +45,15 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::get('email-verification', [EmailVerificationController::class,'sendEmailVerification']);
     Route::post('password/change-password', [ChangePasswordController::class,'changePassword']);
     Route::post('logout', [LogoutController::class,'logout']);
+    Route::put('post/{post_id}/update', [PostUpdateController::class, 'update']);
+    Route::post('post/create', [PostCreateController::class, 'create']);
+    Route::get('post/{post_id}/view', [PostViewController::class, 'view']);
+    Route::get('post/view', [PostViewController::class, 'viewAll']);
+    Route::post('post/{post_id}/delete', [PostDeleteController::class, 'delete']);
+});
+
+
+//Admin
+Route::middleware(['auth:sanctum'])->prefix('/admin')->group(function(){
+    Route::resource('role-permission', RolesAndPermissionsController::class);
 });
